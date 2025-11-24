@@ -33,8 +33,8 @@ class Connection(QGraphicsPathItem):
 
         # Create curved connection
         ctrl_offset = abs(end.x() - start.x()) * 0.5
-        ctrl1 = QPointF(start.x() + ctrl_offset, start.y())
-        ctrl2 = QPointF(end.x() - ctrl_offset, end.y())
+        ctrl1 = QPointF(start.x() , start.y()+ ctrl_offset)
+        ctrl2 = QPointF(end.x() , end.y()- ctrl_offset)
         path.cubicTo(ctrl1, ctrl2, end)
 
         self.setPath(path)

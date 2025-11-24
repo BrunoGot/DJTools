@@ -20,14 +20,14 @@ class MainWindow(QMainWindow):
         # Central widget
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
-        layout = QVBoxLayout(central_widget)
+        layout = QHBoxLayout(central_widget)
 
         # Nodal view
         self.nodal_view = NodalView()
         layout.addWidget(self.nodal_view)
 
         # Button bar
-        button_layout = QHBoxLayout()
+        button_layout = QVBoxLayout()
 
         # Add node button
         add_button = QPushButton("Add Node")

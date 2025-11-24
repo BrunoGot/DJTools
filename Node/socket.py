@@ -13,7 +13,7 @@ class Socket(QGraphicsEllipseItem):
             self.setBrush(QBrush(QColor(100, 150, 255)))
         else:
             self.setBrush(QBrush(QColor(255, 150, 100)))
-        self.setPen(QPen(QColor(50, 50, 50), 2))
+        self.setPen(QPen(QColor(50, 50, 50), 20))
         self.setZValue(2)
 
     def get_center(self):

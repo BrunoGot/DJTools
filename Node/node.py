@@ -30,11 +30,11 @@ class Node(QGraphicsItem):
         self.output_sockets = []
 
         # Create single input socket
-        socket = Socket(0, self.height / 2, 'input', self)
+        socket = Socket(self.width/2, 0, 'input', self)
         self.input_sockets.append(socket)
 
         # Create single output socket
-        socket = Socket(self.width, self.height / 2, 'output', self)
+        socket = Socket(self.width/2, self.height, 'output', self)
         self.output_sockets.append(socket)
 
     def set_title(self, new_title):

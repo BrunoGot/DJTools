@@ -1,6 +1,6 @@
 import json
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QPoint
 from PySide6.QtGui import QBrush, QColor, QPainter
 from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QMenu, QInputDialog
 
@@ -63,11 +63,7 @@ class NodalView(QGraphicsView):
             action = menu.exec(event.globalPos())
 
             if action == rename_action:
-                new_name, ok = QInputDialog.getText(self, "Rename Node",
-                                                    "Enter new name:",
-                                                    text=node.title)
-                if ok and new_name:
-                    node.set_title(new_name)
+               self.rename_node_action(node)
             elif action == delete_action:
                 node.delete()
         else:
@@ -83,6 +79,19 @@ class NodalView(QGraphicsView):
                 if ok and node_name:
                     pos = self.mapToScene(event.pos())
                     self.add_node(node_name, pos.x(), pos.y())
+
+    def rename_node_action(self, node):
+        """
+        handle the renaming process on a specific node : open input text window, set new title on node
+        :param node:
+        :return:
+        """
+        new_name, ok = QInputDialog.getText(self, "Rename Node",
+                                            "Enter new name:",
+                                            text=node.title)
+        if ok and new_name:
+            node.set_title(new_name)
+
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -121,7 +130,7 @@ class NodalView(QGraphicsView):
 
     def wheelEvent(self, event):
         # Zoom with mouse wheel
-        zoom_factor = 1.15
+        zoom_factor = 1.05
         if event.angleDelta().y() > 0:
             self.scale(zoom_factor, zoom_factor)
         else:
