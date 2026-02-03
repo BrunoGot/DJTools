@@ -7,10 +7,6 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton,
 from nodal_view import NodalView
 
 
-
-
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
