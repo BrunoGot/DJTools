@@ -1,8 +1,8 @@
 import json
 
-from PySide6.QtCore import Qt, QPoint
+from PySide6.QtCore import Qt, QPoint, QRect
 from PySide6.QtGui import QBrush, QColor, QPainter
-from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QMenu, QInputDialog
+from PySide6.QtWidgets import QGraphicsView, QGraphicsScene, QMenu, QInputDialog, QRubberBand
 
 from Node.node import Node
 from Node.socket import Socket
@@ -28,6 +28,10 @@ class NodalView(QGraphicsView):
         # Connection drawing
         self.temp_connection = None
         self.start_socket = None
+
+        # Selection
+        self.rubberBand = QRubberBand(QRubberBand.Rectangle, self)
+        self.origin = QPoint()
 
         # Node tracking
         self.nodes = {}  # Dictionary to track nodes by ID
@@ -94,19 +98,33 @@ class NodalView(QGraphicsView):
 
 
     def mousePressEvent(self, event):
+        print(event.pos())
+        print(self.mapToScene(event.pos()))
         if event.button() == Qt.MouseButton.LeftButton:
             item = self.itemAt(event.position().toPoint())
+            print(f"item = {item}")
             if isinstance(item, Socket):
                 self.start_socket = item
                 self.temp_connection = Connection(item)
                 self.scene.addItem(self.temp_connection)
                 return
+
+            elif not item: #Draw selection
+                self.origin = event.pos()
+                # Set the geometry of the rubber band to a 1x1 rectangle at the origin
+                self.rubberBand.setGeometry(QRect(self.origin, event.pos()).normalized())
+                self.rubberBand.show()
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         if self.temp_connection:
             self.temp_connection.end_pos = self.mapToScene(event.position().toPoint())
             self.temp_connection.update_path()
+
+        # Update the rubber band's geometry while dragging
+        elif self.rubberBand.isVisible():
+            self.rubberBand.setGeometry(QRect(self.origin, event.pos()).normalized())
+
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event):
@@ -126,6 +144,23 @@ class NodalView(QGraphicsView):
 
             self.temp_connection = None
             self.start_socket = None
+
+        elif self.rubberBand.isVisible(): #finalise the selection
+            self.rubberBand.hide()
+            # Here you can get the final selection rectangle (self.rubberBand.geometry())
+            # and use it for further logic (e.g., selecting items within the area)
+            selection_rect = self.rubberBand.geometry()
+            print(self.mapToScene(selection_rect).boundingRect())
+            # print(self.mapToScene(event.pos()))
+
+            # print(f"scene_pos = {scene_pos}")
+            # print(f"view_pos = {view_pos}")
+            for i,n in self.nodes.items():
+                if self.mapToScene(selection_rect).boundingRect().intersects(n.rect()):
+                    print(f"contain : {n.title}")
+                    print(f"contain : {n.rect()}")
+                    n.setSelected(True)
+
         super().mouseReleaseEvent(event)
 
     def wheelEvent(self, event):

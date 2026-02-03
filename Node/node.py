@@ -37,6 +37,9 @@ class Node(QGraphicsItem):
         socket = Socket(self.width/2, self.height, 'output', self)
         self.output_sockets.append(socket)
 
+    def rect(self):
+        return QRectF(self.pos().x(), self.pos().y(), self.width, self.height)
+
     def set_title(self, new_title):
         self.title = new_title
         self.title_item.setPlainText(new_title)
