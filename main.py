@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton,
 
 from nodal_view import NodalView
 
+from Browser.browser import Browser
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -18,9 +19,26 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(central_widget)
         layout = QHBoxLayout(central_widget)
 
+        self.browser_menu = Browser()
+        self.browser_menu.view.on_select_file = self.test
+        layout.addWidget(self.browser_menu.view)
+
         # Nodal view
         self.nodal_view = NodalView()
         layout.addWidget(self.nodal_view)
+
+        action_layout = self.action_menu()
+        layout.addLayout(action_layout)
+
+        self.node_counter = 1
+
+    def test(self):
+        btn = self.browser_menu.view.sender()
+        file_path = self.browser_menu.model.get_path(btn.text())
+        self.nodal_view.load_graph(file_path)
+
+    def action_menu(self):
+        """"""
 
         # Button bar
         button_layout = QVBoxLayout()
@@ -40,9 +58,7 @@ class MainWindow(QMainWindow):
         load_button.clicked.connect(self.load_graph)
         button_layout.addWidget(load_button)
 
-        layout.addLayout(button_layout)
-
-        self.node_counter = 1
+        return button_layout
 
     def add_new_node(self):
         self.nodal_view.add_node(f"Node {self.node_counter}", 0, 0)

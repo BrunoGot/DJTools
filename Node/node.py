@@ -6,12 +6,15 @@ from .socket import Socket
 
 
 class Node(QGraphicsItem):
-    def __init__(self, title, x, y, node_id=None):
+    def __init__(self, title, x, y, node_id=None, center = False):
         super().__init__()
         self.title = title
         self.node_id = node_id if node_id else id(self)  # Unique identifier
         self.width = 180
         self.height = 120
+        if center is True:
+            x-=self.width/2
+            y-=self.width/2
         self.setPos(x, y)
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)

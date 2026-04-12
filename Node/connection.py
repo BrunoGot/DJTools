@@ -4,7 +4,7 @@ from PySide6.QtGui import QPen, QColor, QPainterPath
 
 
 class Connection(QGraphicsPathItem):
-    def __init__(self, start_socket, end_socket=None):
+    def __init__(self, start_socket,end_socket=None):
         super().__init__()
         self.start_socket = start_socket
         self.end_socket = end_socket
